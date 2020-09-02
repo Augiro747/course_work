@@ -142,47 +142,33 @@ def add_to_ex(fname):
 
 def forming():
     """format rule in interactive menu"""
-    f=""
-    s=set_action(int(input("Chose number of action\n1)pass\n2)drop\n3)reject\n4)alert\nInput:")))
-    while s=="Error":
-        s=set_action(int(input("Input:")))
-    f=f+s
-    s=set_protocol(int(input("Chose number of protocol\n1)tcp\n2)udp\n3)icmp\n4)Input other\nInput:")))
-    while s=="Error":
-        s=set_protocol(int(input("Input:")))
-    f=f+s
-    s=set_net(int(input("Chose number of source net\n1)HOME_NET from config\n2)EXTERNAL_NET from config\n3)any\n4)Input other\nInput:")))
-    while s=="Error":
-        s=set_net(int(input("Input:")))
-    f=f+s
-    s=set_port(int(input("Chose number of source port\n1)any\n2)Input other\nInput:")))
-    while s=="Error":
-        s=set_port(int(input("Input:")))
-    f=f+s
-    s=set_direction(int(input("Chose number of destination net\n1)to destination only\n2)both source and destination\nInput:")))
-    while s=="Error":
-        s=set_direction(int(input("Input:")))
-    f=f+s
-    s=set_net(int(input("Chose number of destination net\n1)HOME_NET from config\n2)EXTERNAL_NET from config\n3)any\n4)Input other\nInput:")))
-    while s=="Error":
-        s=set_net(int(input("Input:")))
-    f=f+s
-    s=set_port(int(input("Chose number of destination port\n1)any\n2)Input other\nInput:")))
-    while s=="Error":
-        s=set_port(int(input("Input:")))
-    f=f+s+"("
-    s=set_options(int(input("Chose number of option\n1)msg\n2)sid\n3)rev\n4)gid\n5)classtype\n6)reference\n7)priority\n8)metadata\n9)target\n10)content\n11)Input other\nTo end type 0\nInput:")))
-    while s=="Error":
-        s=set_options(int(input("Input:")))
-    f=f+s+"; "
+    f= do_until(set_action,"Chose number of action\n1)pass\n2)drop\n3)reject\n4)alert\nInput:")
+    f = f + do_until(set_protocol,"Chose number of protocol\n1)tcp\n2)udp\n3)icmp\n4)Input other\nInput:")
+    f = f + do_until(set_net,"Chose number of source net\n1)HOME_NET from config\n2)EXTERNAL_NET from config\n3)any\n4)Input other\nInput:")
+    f = f + do_until(set_port,"Chose number of source port\n1)any\n2)Input other\nInput:")
+    f = f + do_until(set_direction,"Chose number of direction net\n1)to destination only\n2)both source and destination\nInput:")
+    f = f + do_until(set_net,"Chose number of destination net\n1)HOME_NET from config\n2)EXTERNAL_NET from config\n3)any\n4)Input other\nInput:")
+    f = f + do_until(set_port, "Chose number of destination port\n1)any\n2)Input other\nInput:")+"("
+    s=''
+    while(s=='Exit')|(s==''):
+        s=do_until(set_options,"Chose number of option\n1)msg\n2)sid\n3)rev\n4)gid\n5)classtype\n6)reference\n7)priority\n8)metadata\n9)target\n10)content\n11)Input other\nTo end type 0\nInput:")
+        if s!='Exit':
+            f=f+s+"; "
+        else:
+            print("Error, ruleset needs at least 1 option")
     while s!='Exit':
-        s = set_options(int(input("Chose number of option\n1)msg\n2)sid\n3)rev\n4)gid\n5)classtype\n6)reference\n7)priority\n8)metadata\n9)target\n10)content\n11)Input other\nTo end type 0\nInput:")))
-        while s == "Error":
-            s = set_options(int(input("Input:")))
+        s = do_until(set_options,"Chose number of option\n1)msg\n2)sid\n3)rev\n4)gid\n5)classtype\n6)reference\n7)priority\n8)metadata\n9)target\n10)content\n11)Input other\nTo end type 0\nInput:")
         if s!="Exit":
             f = f + s + "; "
     f=f[0:len(f)-1]+")"
     return f
+
+def do_until(func,inp_msg):
+    """do ... until analog for functions"""
+    s = func(int(input(inp_msg)))
+    while s == "Error":
+        s = func(int(input("Input:")))
+    return s
 
 if __name__ == '__main__':
     while True:
